@@ -10,10 +10,9 @@ import java.util.Properties;
 
 public class App {
     public static void main(String[] args) throws IOException {
-
-        if (args.length > 0 && App.class.getResource(args[0]) != null) {
-
-            Properties prop = getProperties(args[0]);
+        File file;
+        if (args.length > 0 && (file = new File(args[0])).exists()) {
+            Properties prop = getProperties(file);
 
             Elements elements = getElements(prop);
 
@@ -25,9 +24,9 @@ public class App {
         }
     }
 
-    private static Properties getProperties(String propertyPath) {
-        File file = new File(App.class.getResource(propertyPath).getPath());
-        try (InputStream input = new FileInputStream(file)) {
+    private static Properties getProperties(File propertyPath) {
+
+        try (InputStream input = new FileInputStream(propertyPath)) {
             Properties prop = new Properties();
             prop.load(input);
             return prop;
@@ -45,7 +44,7 @@ public class App {
         Parser parser;
         Elements elements;
 
-        if(Boolean.valueOf(isSearchByQuery) == Boolean.TRUE) {
+        if (Boolean.valueOf(isSearchByQuery) == Boolean.TRUE) {
             parser = new Parser(filePath, Attribute.getInstanceByQuery(queryParam));
             elements = parser.getElementsByQuery();
         } else {

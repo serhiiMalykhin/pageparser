@@ -24,4 +24,10 @@ public class Parser {
         return document.getElementsByAttributeValue(attribute.getKey(), attribute.getValue());
     }
 
+    public Elements getElementsByQuery() throws IOException {
+        Document document = Jsoup.parse(new File(path), UTF_8);
+
+        return document.select(attribute.getOriginValue());
+    }
+
 }

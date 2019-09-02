@@ -15,14 +15,9 @@ public class App {
 
             Properties prop = getProperties(args[0]);
 
-            String filePath = prop.getProperty("htmlFilePath");
+            Elements elements = getElements(prop);
+
             String outputFile = prop.getProperty("outputFile");
-            String element = prop.getProperty("attribute");
-
-            Parser parser = new Parser(filePath, Attribute.getInstanceByAttributeValue(element));
-
-            Elements elements = parser.getElementsByAttributeValue();
-
             new OutputData(outputFile, elements).save();
 
         } else {
@@ -39,5 +34,24 @@ public class App {
         } catch (IOException ex) {
             throw new IllegalArgumentException(ex);
         }
+    }
+
+    private static Elements getElements(Properties prop) throws IOException {
+        String filePath = prop.getProperty("htmlFilePath");
+        String element = prop.getProperty("attribute");
+        String queryParam = prop.getProperty("queryParam");
+        String isSearchByQuery = prop.getProperty("isSearchByQuery");
+
+        Parser parser;
+        Elements elements;
+
+        if(Boolean.valueOf(isSearchByQuery) == Boolean.TRUE) {
+            parser = new Parser(filePath, Attribute.getInstanceByQuery(queryParam));
+            elements = parser.getElementsByQuery();
+        } else {
+            parser = new Parser(filePath, Attribute.getInstanceByAttributeValue(element));
+            elements = parser.getElementsByAttributeValue();
+        }
+        return elements;
     }
 }

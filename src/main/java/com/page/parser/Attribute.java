@@ -30,7 +30,7 @@ public class Attribute {
     }
 
     public static Attribute getInstanceByAttributeValue(String element) {
-        if(!element.matches(ELEMENT_PARSER)){
+        if(element == null || !element.matches(ELEMENT_PARSER)){
             throw new IllegalArgumentException("Check your params");
         }
         String[] dataElements = element.split(EQUALS);
@@ -38,4 +38,12 @@ public class Attribute {
         String value = dataElements[1];
         return new Attribute(key, value, element);
     }
+
+    public static Attribute getInstanceByQuery(String query) {
+        if(query == null ){
+            throw new IllegalArgumentException("Check your params");
+        }
+        return new Attribute(null, null, query);
+    }
+
 }

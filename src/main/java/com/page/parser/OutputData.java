@@ -9,9 +9,10 @@ import java.io.IOException;
 
 public class OutputData {
 
-    public static final String EMPTY = " ";
-    public static final int ZERO = 0;
+    private static final String EMPTY = " ";
     private static final String LESS = ">";
+    private static final int ZERO = 0;
+
     private String fileName;
     private Elements elements;
 

@@ -1,6 +1,8 @@
 package com.page.parser;
 
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,6 +11,8 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class App {
+    private static Logger LOGGER = LoggerFactory.getLogger(App.class);
+
     public static void main(String[] args) throws IOException {
         File file;
         if (args.length > 0 && (file = new File(args[0])).exists()) {
@@ -20,7 +24,7 @@ public class App {
             new OutputData(outputFile, elements).save();
 
         } else {
-            System.out.println("Check your path to property file");
+            LOGGER.warn("Check your path to property file");
         }
     }
 

@@ -2,7 +2,8 @@ Application to find html elements on a page by attributes.
 
 Run the application:
 
-1) java -jar page-parser-1.0 <path_to_application_properties>
+1) mvn clean package
+2) java -jar page-parser-1.0 <path_to_application_properties>
 
 The Result of the execution:
 

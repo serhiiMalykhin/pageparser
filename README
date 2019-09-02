@@ -1,3 +1,14 @@
 Application to find html elements on a page by attributes.
 
-to run the application
+Run the application:
+
+1) java -jar page-parser-1.0 <path_to_application_properties>
+
+The Result of the execution:
+
+Example:
+ #root > html > body > div > a
+ #root > html > body > div > div > div > div > div > div > button
+ #root > html > body > div > div > div > div > div > div > a
+
+where the last element is the tag that has attribute from property file

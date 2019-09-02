@@ -17,7 +17,7 @@ public class App {
 
             String filePath = prop.getProperty("htmlFilePath");
             String outputFile = prop.getProperty("outputFile");
-            String element = prop.getProperty("element");
+            String element = prop.getProperty("attribute");
 
             Parser parser = new Parser(filePath, Attribute.getInstanceByAttributeValue(element));
 

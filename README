@@ -4,12 +4,17 @@ Run the application:
 
 1) mvn clean package
 2) java -jar page-parser-1.0 <path_to_application_properties>
+OR
+/**
+* This option has default attribute pattern to find an element on the "url_origin_link"
+*/
+java -jar page-parser-1.0 <url_origin_link> <related_link_to_origin>
 
-The Result of the execution:
+The Result of the execution will be in "result.txt" file:
 
 Example:
- #root > html > body > div > a
- #root > html > body > div > div > div > div > div > div > button
- #root > html > body > div > div > div > div > div > div > a
+ html > body > div > a
+ html > body > div > div > div > div > div > div > button
+ html > body > div > div > div > div > div > div > a
 
 where the last element is the tag that has attribute from property file

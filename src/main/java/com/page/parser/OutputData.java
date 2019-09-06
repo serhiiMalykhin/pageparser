@@ -1,11 +1,11 @@
 package com.page.parser;
 
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 public class OutputData {
 
@@ -14,9 +14,9 @@ public class OutputData {
     private static final int ZERO = 0;
 
     private String fileName;
-    private Elements elements;
+    private List<Element> elements;
 
-    public OutputData(String fileName, Elements elements) {
+    public OutputData(String fileName, List<Element> elements) {
         this.elements = elements;
         this.fileName = fileName;
     }
@@ -31,23 +31,24 @@ public class OutputData {
         write(elements, writer);
     }
 
-    private void write(Elements elements, BufferedWriter writer) throws IOException {
-        for (int i = 0; i < elements.size(); i++) {
+    private void write(List<Element> elements, BufferedWriter writer) throws IOException {
+        for (Element element : elements) {
             StringBuilder stringBuilder = new StringBuilder();
-            buildPath(elements.get(i), stringBuilder);
+            buildPath(element, stringBuilder);
             writer.write(stringBuilder.toString());
             writer.newLine();
         }
     }
 
-    private StringBuilder buildPath(Element element, StringBuilder stringBuilder) {
-        stringBuilder.insert(ZERO, element.tagName());
-        stringBuilder.insert(ZERO, EMPTY);
-        if (element.parent() != null) {
-            stringBuilder.insert(ZERO, LESS);
-            stringBuilder.insert(ZERO, EMPTY);
-            buildPath(element.parent(), stringBuilder);
+    private void buildPath(Element element, StringBuilder stringBuilder) {
+        if (!element.tagName().contains("root")) {
+            stringBuilder.insert(ZERO, element.tagName());
+            if (element.parent() != null && !element.tagName().contains("html")) {
+                stringBuilder.insert(ZERO, EMPTY);
+                stringBuilder.insert(ZERO, LESS);
+                stringBuilder.insert(ZERO, EMPTY);
+                buildPath(element.parent(), stringBuilder);
+            }
         }
-        return stringBuilder;
     }
 }

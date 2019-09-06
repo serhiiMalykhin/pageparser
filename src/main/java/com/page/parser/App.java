@@ -1,5 +1,6 @@
 package com.page.parser;
 
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Properties;
 
 public class App {
@@ -17,19 +19,25 @@ public class App {
         File file;
         if (args.length > 0 && (file = new File(args[0])).exists()) {
             Properties prop = getProperties(file);
+            String relatedSourcePage = relatedSourcePage(prop);
 
-            Elements elements = getElements(prop);
+            Elements sourceElement = new Parser(
+                    getSourcePage(prop),
+                    Attribute.getInstanceByAttributeValue(getSourceAttribute(prop)))
+                    .getElementsByAttributeValue();
 
-            String outputFile = prop.getProperty("outputFile");
-            new OutputData(outputFile, elements).save();
+            CaseParser caseParser = new CaseParser(sourceElement, relatedSourcePage);
+            List<Element> result = caseParser.parse();
+
+            new OutputData(getResultFile(prop), result)
+                    .save();
 
         } else {
-            LOGGER.warn("Check your path to property file");
+            LOGGER.info("Check your path to property file");
         }
     }
 
     private static Properties getProperties(File propertyPath) {
-
         try (InputStream input = new FileInputStream(propertyPath)) {
             Properties prop = new Properties();
             prop.load(input);
@@ -39,22 +47,19 @@ public class App {
         }
     }
 
-    private static Elements getElements(Properties prop) throws IOException {
-        String filePath = prop.getProperty("htmlFilePath");
-        String element = prop.getProperty("attribute");
-        String queryParam = prop.getProperty("queryParam");
-        String isSearchByQuery = prop.getProperty("isSearchByQuery");
+    private static String getSourceAttribute(Properties prop) {
+        return prop.getProperty("sourceAttribute");
+    }
 
-        Parser parser;
-        Elements elements;
+    private static String getSourcePage(Properties prop) {
+        return prop.getProperty("sourcePage");
+    }
 
-        if (Boolean.valueOf(isSearchByQuery) == Boolean.TRUE) {
-            parser = new Parser(filePath, Attribute.getInstanceByQuery(queryParam));
-            elements = parser.getElementsByQuery();
-        } else {
-            parser = new Parser(filePath, Attribute.getInstanceByAttributeValue(element));
-            elements = parser.getElementsByAttributeValue();
-        }
-        return elements;
+    private static String relatedSourcePage(Properties prop) {
+        return prop.getProperty("relatedSourcePage");
+    }
+
+    private static String getResultFile(Properties prop) {
+        return prop.getProperty("resultFile");
     }
 }

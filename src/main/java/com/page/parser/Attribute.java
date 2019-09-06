@@ -39,11 +39,4 @@ public class Attribute {
         return new Attribute(key, value, element);
     }
 
-    public static Attribute getInstanceByQuery(String query) {
-        if(query == null ){
-            throw new IllegalArgumentException("Check your params");
-        }
-        return new Attribute(null, null, query);
-    }
-
 }

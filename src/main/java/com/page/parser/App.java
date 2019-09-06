@@ -2,8 +2,6 @@ package com.page.parser;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,28 +11,41 @@ import java.util.List;
 import java.util.Properties;
 
 public class App {
-    private static Logger LOGGER = LoggerFactory.getLogger(App.class);
 
     public static void main(String[] args) throws IOException {
         File file;
-        if (args.length > 0 && (file = new File(args[0])).exists()) {
+        if (args.length == 1 && (file = new File(args[0])).exists()) {
             Properties prop = getProperties(file);
-            String relatedSourcePage = relatedSourcePage(prop);
 
-            Elements sourceElement = new Parser(
-                    getSourcePage(prop),
-                    Attribute.getInstanceByAttributeValue(getSourceAttribute(prop)))
-                    .getElementsByAttributeValue();
+            startParse(getSourcePage(prop), getSourceAttribute(prop), getRelatedSourcePage(prop), getResultFile(prop));
 
-            CaseParser caseParser = new CaseParser(sourceElement, relatedSourcePage);
-            List<Element> result = caseParser.parse();
+        } else if (args.length == 2) {
+            String sourcePage = args[0];
+            String relatedSourcePage = args[1];
+            String defaultPatternAttribute = "id=\"make-everything-ok-button\"";
+            String outputFile = "result.txt";
 
-            new OutputData(getResultFile(prop), result)
-                    .save();
-
+            startParse(sourcePage, defaultPatternAttribute, relatedSourcePage, outputFile);
         } else {
-            LOGGER.info("Check your path to property file");
+            System.out.println("Check your path to property file");
+            return;
         }
+    }
+
+    private static void startParse(String sourcePage,
+                                   String patternSourceAttribute,
+                                   String relatedSourcePage,
+                                   String outputFileName) throws IOException {
+
+        Elements sourceElement = new Parser(sourcePage, Attribute.getInstanceByAttributeValue(patternSourceAttribute))
+                .getElementsByAttributeValue();
+
+        CaseParser caseParser = new CaseParser(sourceElement, relatedSourcePage);
+
+        List<Element> result = caseParser.parse();
+
+        new OutputData(outputFileName, result)
+                .save();
     }
 
     private static Properties getProperties(File propertyPath) {
@@ -55,7 +66,7 @@ public class App {
         return prop.getProperty("sourcePage");
     }
 
-    private static String relatedSourcePage(Properties prop) {
+    private static String getRelatedSourcePage(Properties prop) {
         return prop.getProperty("relatedSourcePage");
     }
 
